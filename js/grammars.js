@@ -7,6 +7,14 @@ function listOf(listName,items){
     return ["#"+items+"#, #"+listName+"#","#"+items+"# and #"+items+"#"];
 }
 
+function ingredient(items){
+    for (var i = items.length - 1; i >= 0; i--) {
+        items[i]="#[ingredients:#ingredients# "+items[i]+"]#"+items[i]
+    }
+    console.log(items);
+    return items;
+}
+
 //FIXME only go through June
 //FIXME I don't like the implementation of this
 function inSeasonVegetables(){
@@ -34,7 +42,8 @@ function inSeasonVegetables(){
             return ["avacado","basil","cabbage","carrot","corn","garlic","leek",
             "summer squash","tomato"];
         case 6:
-            return ["whatever's in season in July"];
+            return ["avacado","basil","corn","cucumber","eggplant","garlic","potato",
+            "summer squash","tomato"];
         case 7:
             return ["whatever's in season in August"];
         case 8:
@@ -72,7 +81,8 @@ function inSeasonCookableVegetables(){
             return ["basil","cabbage","carrot","corn","garlic","leek",
             "summer squash","tomato"];
         case 6:
-            return ["whatever's in season in July"];
+            return ["basil","corn","eggplant","garlic","potato",
+            "summer squash","tomato"];
         case 7:
             return ["whatever's in season in August"];
         case 8:
@@ -95,7 +105,34 @@ function inSeasonCookableVegetables(){
 //FIXME vegetables require implementation of descriptive vs quantitative 
 //(kale salad, sauteed kales)
 var grammars = {
+    test : {
+        "origin":["helloWorld!"]
+    },
     dinners : {
+        "origin": ["#[#setLet's#]message#"],
+        "message":[
+            "#let's.capitalize# make #dish##!#",
+            "Today #let's# make #dish##!#",
+            //"#let's.capitalize# make #side#, that can go with #dish##!#",
+            //"I think #dish# might be nice# optAddition##!#",
+            //"#let's.capitalize# have #dish# for #savoryMeal##!#",
+            //"#dish.capitalize# for #savoryMeal#?",
+        ],
+        "dish": ["[ingredients:Ingredients]#dishDescription#"],
+        "dishDescription":[
+            "a stew of #listOfCookableVegetables# with #optAdj ##descriptiveProtein#",
+            "#optSpice ##listOfVegetables# soup with #descriptiveProtein#",
+            "#optAdj ##vegetable#, #protein# and rice",
+            "#optAdj ##descriptiveProtein# #proteinPreparation#",
+            "#optAdj ##spice# chili with #protein#",
+            "#pasta# with #protein# and #vegetable#",
+            "#specificDish## optAddition#",
+            "#vegetable# salad with #listOfVegetables# and #protein#",
+            "#dish# with #extra#",
+            "#dish## optAddition#",
+            "#optAdj ##descriptiveProtein# casserole with #listOfVegetables#",
+        ],
+
         "listOfVegetables": listOf("listOfVegetables","vegetable"),
         "vegetable": inSeasonVegetables(),
         "listOfCookableVegetables": listOf("listOfCookableVegetables","cookableVegetable"),
@@ -127,26 +164,13 @@ var grammars = {
             "#protein# and #vegetable#"
         ],
 
-        "adj": ["#adj#, #adj#","fresh","pureed","sauteed","baked","fried","spicy",
+        "adj": ["#adj#, #adj#","fresh","pureed","sauteed","baked","fried",
         "green chilli","mole","Szechuan","Thai","Cajun","Mediterranean","sweet",
-        "rich","paprikash"],
+        "rich","paprikash","spicy"],
         "optAdj ":["","#adj# "],
         "spice":["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
-        "mint","bay","thyme","oregano"],
+        "mint","bay","thyme","oregano","garam masala","rosemary","sage"],
         "optSpice ":["a hint of #spice# ","#spice# ",""],
-        "dish": [
-            "a stew of #listOfCookableVegetables# with #optAdj ##descriptiveProtein#",
-            "#optSpice ##listOfVegetables# soup with #descriptiveProtein#",
-            "#optAdj ##vegetable#, #protein# and rice",
-            "#optAdj ##descriptiveProtein# #proteinPreparation#",
-            "#optAdj ##spice# chili with #protein#",
-            "#pasta# with #protein# and #vegetable#",
-            "#specificDish## optAddition#",
-            "#vegetable# salad with #listOfVegetables# and #protein#",
-            "#dish# with #extra#",
-            "#dish## optAddition#",
-            "#optAdj ##descriptiveProtein# casserole with #listOfVegetables#",
-        ],
         "proteinPreparation":["pot-pie","burger"],
         //specific dishes don't allow for much modification
         "specificDish":["shakshuka","fajitas","ratatouille","lasagna",
@@ -157,15 +181,7 @@ var grammars = {
         "#optAdj ##pasta#"],
         "savoryMeal":["dinner","lunch"],
         "!":["",".","!"],
-        "let's":["let's","I'll","you should","we will"],
-        "origin": [
-            "#let's.capitalize# make #dish##!#",
-            "Today #let's# make #dish##!#",
-            "#let's.capitalize# make #side#, that can go with #dish##!#",
-            "I think #dish# might be nice# optAddition##!#",
-            "#let's.capitalize# have #dish# for #savoryMeal##!#",
-            "#dish.capitalize# for #savoryMeal#?",
-        ],
+        "setLet's":["[let's:let's]","[let's:I'll]","[let's:you should]","[let's:we will]"],
         "side": [
             "#cookableVegetable# chips",
             "sauteed #cookableVegetable#",
@@ -188,7 +204,7 @@ var grammars = {
             "bacon"
         ],
         " optAddition": [
-            " maybe with #side#",
+            ", maybe with #side#",
             "",
             " with #extra#"
         ]
