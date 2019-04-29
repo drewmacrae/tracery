@@ -2,6 +2,8 @@
  * @author Drew
  */
 
+var outputFormat = "CBDQ";
+
 //Fixme I don't work with single item lists because the english grammar is hard
 function listOf(listName,items){
     return ["#"+items+"#, #"+listName+"#","#"+items+"# and #"+items+"#"];
@@ -120,51 +122,60 @@ proteinList.push("#protein# and #vegetable#");
 
 var pastaList = ingredient(["spaghetti","ziti","macaroni","tagliatelle",
     "rigatoni","linguine","penne","fettuccine","orzo"]);
-pastaList.push("[filling:#extra#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# tortellini]#filling# tortellini");
-pastaList.push("[filling:#extraOrVegetableOrDescriptiveProtien#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# ravioli] #filling# ravioli");
+pastaList.push("[filling:#nonSauceExtra#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# tortellini]#filling# tortellini");
+pastaList.push("[filling:#nonSauceExtraOrVegetableOrDescriptiveProtien#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# ravioli] #filling# ravioli");
 pastaList.push("#optAdj ##pasta#");
 
-var extraList = ingredient([
+var nonSauceExtraList = ingredient([
             "cheese",
             "peanuts",
             "walnuts",
             "slivered almonds",
             "capers",
             "bacon"]);
-extraList.push("[ingredients:#ingredients#, sour cream]#optSpice #sour cream");
-extraList.push("[ingredients:#ingredients#, yogurt]#optSpice #[ingredients:#ingredients#, salt and pepper to taste]yogurt sauce");
-extraList.push("yogurt #vegetable# sauce[ingredients:#ingredients# thinly sliced, yogurt]");
-extraList.push("[ingredients:#ingredients#, minced onion, wine, stock, butter]#optSpice #pan sauce[ingredients:#ingredients#, salt and pepper to taste]");
-extraList.push("#optSpice ##vegetable# pesto[ingredients:#ingredients#, oil, nuts, garlic, parmesan]");
-extraList.push("[ingredients:#ingredients#, soba noodles, lime, sesame oil, rice wine vinegar, sugar]marinated soba noodles");
+nonSauceExtraList.push("[ingredients:#ingredients#, soba noodles, lime, sesame oil, rice wine vinegar, sugar]marinated soba noodles");
+var saucesList = ["[ingredients:#ingredients#, sour cream]#optSpice #sour cream"];
+saucesList.push("[ingredients:#ingredients#, yogurt]#optSpice #[ingredients:#ingredients#, salt and pepper to taste]yogurt sauce");
+saucesList.push("yogurt #vegetable# sauce[ingredients:#ingredients# thinly sliced, yogurt]");
+saucesList.push("[ingredients:#ingredients#, minced onion, wine, stock, butter]#optSpice #pan sauce[ingredients:#ingredients#, salt and pepper to taste]");
+saucesList.push("#optSpice ##vegetable# pesto[ingredients:#ingredients#, oil, nuts, garlic, parmesan]");
+
+if(outputFormat=="CBDQ"){
+    var origin =["[recipes:]#setLets##message#"];
+    var dish = ["[ingredients:Ingredients]#dishDescription#"];
+    var side = ["[ingredients:Ingredients]#sideDescription#"];
+} else {
+    var origin = ["[recipes:]#setLets##message#<br>#recipes#"];
+    var dish = ["[ingredients:Ingredients]#dishDescription#[recipes:#recipes# <br> #ingredients#]"];
+    var side = ["[ingredients:Ingredients]#sideDescription#[recipes:#recipes# <br> #ingredients#]"];
+}
 
 var grammars = {
-    test : {
-        "origin":["helloWorld!"]
-    },
     dinners : {
-        "origin": ["#setLets##message#"],
+        "origin":origin,
+        "dish":dish,
+        "side":side,
         "message":[
             "#lets.capitalize# make #dish##!#",
             "Today #lets# make #dish##!#",
             "#lets.capitalize# make #side#, that can go with #dish##!#",
-            "I think #dish# might be nice# optAddition##!#",
             "#lets.capitalize# have #dish# for #savoryMeal##!#",
             "#dish.capitalize# for #savoryMeal#?",
         ],
-        "dish": ["[ingredients:Ingredients]#dishDescription#"],
+
         "dishDescription":[
             "a stew of #listOfCookableVegetables# with #optAdj ##descriptiveProtein#",
-            "#optSpice ##listOfVegetables# soup with #protein#",
+            "#optSpice ##listOfVegetables# soup with #protein#[ingredients:#ingredients#, stock, salt and pepper to taste]",
             "[ingredients:#ingredients#, rice]#optAdj ##vegetable#, #protein# and rice",
             "#optAdj ##descriptiveProtein# #proteinPreparation#",
             "[ingredients:#ingredients#, beans, onions, tomatoes, cumin, chili]#optAdj ##spice# chili with #protein#",
             "#pasta# with #protein# and #vegetable#",
             "#specificDish## optAddition#",
             "#vegetable# salad with #listOfVegetables# and #protein#",
-            "#dish# with #extra#",
-            "#dish## optAddition#",
-            "#optAdj ##descriptiveProtein# casserole with #listOfVegetables#",
+            "#dishDescription# with #extra#",
+            "#dishDescription## optAddition#",
+            //"#dishDescription# might be nice# optAddition#",//grammatically wierd
+            "#optAdj ##descriptiveProtein# casserole with #listOfVegetables#[ingredients:#ingredients#, butter, flour, bread crumbs]",
         ],
 
         "listOfVegetables": listOf("listOfVegetables","vegetable"),
@@ -172,11 +183,10 @@ var grammars = {
 
         "vegetable": ingredient(inSeasonVegetables()),
         "cookableVegetable": ingredient(inSeasonCookableVegetables()),
-        "fruit":ingredient(["apple","orange"]),
+        "fruit":["apple","orange","honey","juice"],
         "descriptiveProtein":descriptiveProteinList,
         "protein":proteinList,
         "pasta":pastaList,
-
         "adj": ["#adj#, #adj#",
         "[ingredients:#ingredients#, garlic, butter, parsely]garlic",
         "[ingredients:#ingredients#, green-garlic]green-garlic",
@@ -193,11 +203,11 @@ var grammars = {
         "[ingredients:#ingredients#, red pepper flakes]spicy"],
         "optAdj ":["","#adj# "],
         "spice":ingredient(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
-        "mint","bay","thyme","oregano","garam masala","rosemary","sage"]),
-        "optSpice ":["a hint of #spice# ","#spice# ",""],
+        "mint","thyme","oregano","garam masala","rosemary","sage"]),
+        "optSpice ":["a hint of #spice# on ","#spice# ",""],
         "proteinPreparation":[
         "[ingredients:#ingredients#, pie crust, butter, flour, diced potatoes,  peas, diced carrots]pot-pie",
-        "[ingredients:#ingredients#, chopped onion, pepper, bread crumbs, bun]burger"],
+        "[ingredients:#ingredients#, chopped onion, pepper, bread crumbs, bun, ketchup]burger"],
         //specific dishes don't allow for much modification
         "specificDish":["[ingredients:#ingredients#, onion, tomatoes, eggs, salt and pepper to taste]shakshuka",
             "[ingredients:#ingredients#, onions, peppers, chili powder]fajitas",
@@ -207,21 +217,22 @@ var grammars = {
         "savoryMeal":["dinner","lunch"],
         "!":["",".","!"],
         "setLets":["[lets:let's]","[lets:I'll]","[lets:you should]","[lets:we will]"],
-        "side": ["[ingredients:Ingredients]#sideDescription#"],
         "sideDescription":[
             "#cookableVegetable# chips",
-            "sauteed #cookableVegetable#",
+            "[ingredients:#ingredients#, oil]sauteed #cookableVegetable#[ingredients:#ingredients#, salt and pepper to taste]",
             "#vegetable#",
             "#spice# spiced #vegetable#",
-            "#side# and #extra#"
+            "#sideDescription# and #extra#"
         ],
-        "extra": extraList,
+        "nonSauceExtra":nonSauceExtraList,
+        "sauces":saucesList,
+        "extra": ["#nonSauceExtra#","#sauces#"],
         " optAddition": [
-            ", maybe with #side#",
+            ", maybe with #sideDescription#",
             "",
             " with #extra#"
         ],
-        "extraOrVegetableOrDescriptiveProtien":["#extra#","#vegetable#","#descriptiveProtein#"],
+        "nonSauceExtraOrVegetableOrDescriptiveProtien":["#nonSauceExtra#","#vegetable#","#descriptiveProtein#"],
 
     },
 
