@@ -198,7 +198,7 @@ var tracery = function() {
             this.ruleText = this.ruleNode.finishedText;
 
             grammar.pushRules(this.target, this.ruleText, this);
-            console.log("Push rules:" + this.target + " " + this.ruleText);
+            //console.log("Push rules:" + this.target + " " + this.ruleText);
             break;
         case 1:
             break;

@@ -7,11 +7,13 @@ function listOf(listName,items){
     return ["#"+items+"#, #"+listName+"#","#"+items+"# and #"+items+"#"];
 }
 
+//"[ingredients:#ingredients# artichoke]artichoke" for example. This appends an 
+//ingredient to an ingredient list
 function ingredient(items){
     for (var i = items.length - 1; i >= 0; i--) {
-        items[i]="#[ingredients:#ingredients# "+items[i]+"]#"+items[i]
+        items[i]="[ingredients:#ingredients#, "+items[i]+"]"+items[i]
     }
-    console.log(items);
+    //console.log(items);
     return items;
 }
 
@@ -28,21 +30,21 @@ function inSeasonVegetables(){
             "chard","kale","leek","onion","radish","spinach"];
         case 2:
             return ["artichoke","arugula","asparagus","beet","bok choy",
-            "broccoli","cauliflower","chard","green garlic","kale","leek",
+            "broccoli","cauliflower","chard","kale","leek",
             "onion"];
         case 3:
             return ["artichoke","arugula","asparagus","avacado","beet",
-            "bok choy","carrot","cauliflower","chard","garlic","green garlic",
+            "bok choy","carrot","cauliflower","chard",
             "kale","leek"];
         case 4:
             return ["artichoke","arugula","asparagus","avacado","beet",
-            "cabbage","carrot","cauliflower","chard","garlic","green garlic",
+            "cabbage","carrot","cauliflower","chard",
             "kale","leek"];
         case 5:
-            return ["avacado","basil","cabbage","carrot","corn","garlic","leek",
+            return ["avacado","basil","cabbage","carrot","corn","leek",
             "summer squash","tomato"];
         case 6:
-            return ["avacado","basil","corn","cucumber","eggplant","garlic","potato",
+            return ["avacado","basil","corn","cucumber","eggplant","potato",
             "summer squash","tomato"];
         case 7:
             return ["whatever's in season in August"];
@@ -104,27 +106,59 @@ function inSeasonCookableVegetables(){
 
 //FIXME vegetables require implementation of descriptive vs quantitative 
 //(kale salad, sauteed kales)
+
+//FIXME implementation of cookable and vegetable is clunky
+
+//build lists with a mix of ingredients and non-ingredients
+var descriptiveProteinList = ingredient(["salmon", "fish", "bean", "lentil", 
+    "chickpea", "chicken", "mushroom", "beef"]);
+descriptiveProteinList.push("#descriptiveProtein# and #vegetable#");
+
+var proteinList = ingredient([ "salmon", "fish", "beans", "tofu", "lentils",
+    "chickpeas", "chicken", "mushrooms", "beef"]);
+proteinList.push("#protein# and #vegetable#");
+
+var pastaList = ingredient(["spaghetti","ziti","macaroni","tagliatelle",
+    "rigatoni","linguine","penne","fettuccine","orzo"]);
+pastaList.push("[filling:#extra#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# tortellini]#filling# tortellini");
+pastaList.push("[filling:#extraOrVegetableOrDescriptiveProtien#][ingredients:#ingredients#, flour and eggs (to make pasta) or #filling# ravioli] #filling# ravioli");
+pastaList.push("#optAdj ##pasta#");
+
+var extraList = ingredient([
+            "cheese",
+            "peanuts",
+            "walnuts",
+            "slivered almonds",
+            "capers",
+            "bacon"]);
+extraList.push("[ingredients:#ingredients#, sour cream]#optSpice #sour cream");
+extraList.push("[ingredients:#ingredients#, yogurt]#optSpice #[ingredients:#ingredients#, salt and pepper to taste]yogurt sauce");
+extraList.push("yogurt #vegetable# sauce[ingredients:#ingredients# thinly sliced, yogurt]");
+extraList.push("[ingredients:#ingredients#, minced onion, wine, stock, butter]#optSpice #pan sauce[ingredients:#ingredients#, salt and pepper to taste]");
+extraList.push("#optSpice ##vegetable# pesto[ingredients:#ingredients#, oil, nuts, garlic, parmesan]");
+extraList.push("[ingredients:#ingredients#, soba noodles, lime, sesame oil, rice wine vinegar, sugar]marinated soba noodles");
+
 var grammars = {
     test : {
         "origin":["helloWorld!"]
     },
     dinners : {
-        "origin": ["#[#setLet's#]message#"],
+        "origin": ["#setLets##message#"],
         "message":[
-            "#let's.capitalize# make #dish##!#",
-            "Today #let's# make #dish##!#",
-            //"#let's.capitalize# make #side#, that can go with #dish##!#",
-            //"I think #dish# might be nice# optAddition##!#",
-            //"#let's.capitalize# have #dish# for #savoryMeal##!#",
-            //"#dish.capitalize# for #savoryMeal#?",
+            "#lets.capitalize# make #dish##!#",
+            "Today #lets# make #dish##!#",
+            "#lets.capitalize# make #side#, that can go with #dish##!#",
+            "I think #dish# might be nice# optAddition##!#",
+            "#lets.capitalize# have #dish# for #savoryMeal##!#",
+            "#dish.capitalize# for #savoryMeal#?",
         ],
         "dish": ["[ingredients:Ingredients]#dishDescription#"],
         "dishDescription":[
             "a stew of #listOfCookableVegetables# with #optAdj ##descriptiveProtein#",
-            "#optSpice ##listOfVegetables# soup with #descriptiveProtein#",
-            "#optAdj ##vegetable#, #protein# and rice",
+            "#optSpice ##listOfVegetables# soup with #protein#",
+            "[ingredients:#ingredients#, rice]#optAdj ##vegetable#, #protein# and rice",
             "#optAdj ##descriptiveProtein# #proteinPreparation#",
-            "#optAdj ##spice# chili with #protein#",
+            "[ingredients:#ingredients#, beans, onions, tomatoes, cumin, chili]#optAdj ##spice# chili with #protein#",
             "#pasta# with #protein# and #vegetable#",
             "#specificDish## optAddition#",
             "#vegetable# salad with #listOfVegetables# and #protein#",
@@ -134,80 +168,61 @@ var grammars = {
         ],
 
         "listOfVegetables": listOf("listOfVegetables","vegetable"),
-        "vegetable": inSeasonVegetables(),
         "listOfCookableVegetables": listOf("listOfCookableVegetables","cookableVegetable"),
-        "cookableVegetable": inSeasonCookableVegetables(),
-        "fruit":[],
-        "descriptiveProtein": [
-            "salmon",
-            "bean",
-            "lentil",
-            "chickpea",
-            "chicken",
-            "mushroom",
-            "bacon",
-            "beef",
-            "#descriptiveProtein# and #vegetable#"
-        ],
 
-        "protein": [
-            "salmon",
-            "fish",
-            "beans",
-            "tofu",
-            "lentils",
-            "chickpeas",
-            "chicken",
-            "mushrooms",
-            "bacon",
-            "beef",
-            "#protein# and #vegetable#"
-        ],
+        "vegetable": ingredient(inSeasonVegetables()),
+        "cookableVegetable": ingredient(inSeasonCookableVegetables()),
+        "fruit":ingredient(["apple","orange"]),
+        "descriptiveProtein":descriptiveProteinList,
+        "protein":proteinList,
+        "pasta":pastaList,
 
-        "adj": ["#adj#, #adj#","fresh","pureed","sauteed","baked","fried",
-        "green chilli","mole","Szechuan","Thai","Cajun","Mediterranean","sweet",
-        "rich","paprikash","spicy"],
+        "adj": ["#adj#, #adj#",
+        "[ingredients:#ingredients#, garlic, butter, parsely]garlic",
+        "[ingredients:#ingredients#, green-garlic]green-garlic",
+        "[ingredients:#ingredients#, garlic, lemon juice, lemon zest]fresh","pureed","sauteed","baked","fried",
+        "[ingredients:#ingredients#, green chile]green chile",
+        "[ingredients:#ingredients#, peppers, cinnamon, chocolate, black pepper, cumin, salt to taste]mole",
+        "[ingredients:#ingredients#, Szechuan peppercorn, chiles, garlic, ginger, star anise, soy sauce, rice wine vinegar]Szechuan",
+        "[ingredients:#ingredients#, curry, water chestnuts, corn, carrots, coconut milk]Thai",
+        "[ingredients:#ingredients#, butter, flour, garlic, paprika, cayanne pepper, thyme]Cajun",
+        "[ingredients:#ingredients#, couscous, za'atar, pine nuts]za'atar",
+        "[ingredients:#ingredients#, lemon, parsely, garlic, chopped tomatoes]Mediterranean",
+        "[ingredients:#ingredients#, #fruit#]sweet",
+        "[ingredients:#ingredients#, stock, buttor or cream]rich",
+        "[ingredients:#ingredients#, red pepper flakes]spicy"],
         "optAdj ":["","#adj# "],
-        "spice":["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
-        "mint","bay","thyme","oregano","garam masala","rosemary","sage"],
+        "spice":ingredient(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
+        "mint","bay","thyme","oregano","garam masala","rosemary","sage"]),
         "optSpice ":["a hint of #spice# ","#spice# ",""],
-        "proteinPreparation":["pot-pie","burger"],
+        "proteinPreparation":[
+        "[ingredients:#ingredients#, pie crust, butter, flour, diced potatoes,  peas, diced carrots]pot-pie",
+        "[ingredients:#ingredients#, chopped onion, pepper, bread crumbs, bun]burger"],
         //specific dishes don't allow for much modification
-        "specificDish":["shakshuka","fajitas","ratatouille","lasagna",
-        "#descriptiveProtein# tagine"],
-        "pasta":["spaghetti","ziti","macaroni","tagliatelle","rigatoni",
-        "#extra# tortellini","#extra# ravioli","#vegetable# ravioli",
-        "#descriptiveProtein# ravioli","linguine","penne","fettuccine","orzo",
-        "#optAdj ##pasta#"],
+        "specificDish":["[ingredients:#ingredients#, onion, tomatoes, eggs, salt and pepper to taste]shakshuka",
+            "[ingredients:#ingredients#, onions, peppers, chili powder]fajitas",
+            "[ingredients:#ingredients#, onions, eggplant, squash, peppers, bay leaves, salt and pepper to taste]ratatouille",
+            "#descriptiveProtein# [ingredients:#ingredients#, lasagna noodles, tomato sauce, ricotta, mozzarella, parmesan]lasagna",
+            "#descriptiveProtein# [ingredients:#ingredients#, onion, carrots, peas, potatoes, rasins]tagine"],
         "savoryMeal":["dinner","lunch"],
         "!":["",".","!"],
-        "setLet's":["[let's:let's]","[let's:I'll]","[let's:you should]","[let's:we will]"],
-        "side": [
+        "setLets":["[lets:let's]","[lets:I'll]","[lets:you should]","[lets:we will]"],
+        "side": ["[ingredients:Ingredients]#sideDescription#"],
+        "sideDescription":[
             "#cookableVegetable# chips",
             "sauteed #cookableVegetable#",
             "#vegetable#",
             "#spice# spiced #vegetable#",
             "#side# and #extra#"
         ],
-        "extra": [
-            "cheese",
-            "#optSpice #sour cream",
-            "#optSpice #yogurt sauce",
-            "yogurt #vegetable# sauce",
-            "peanuts",
-            "walnuts",
-            "slivered almonds",
-            "capers",
-            "#optSpice #pan sauce",
-            "#optSpice ##vegetable# pesto",
-            "marinated soba noodles",
-            "bacon"
-        ],
+        "extra": extraList,
         " optAddition": [
             ", maybe with #side#",
             "",
             " with #extra#"
-        ]
+        ],
+        "extraOrVegetableOrDescriptiveProtien":["#extra#","#vegetable#","#descriptiveProtein#"],
+
     },
 
 }
