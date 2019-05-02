@@ -13,14 +13,16 @@
 }
 
 .tracery-node1.dynamic {
-	background-color:rgba(255, 190, 25, .7);
+	background-color:rgba(0, 190, 25, .7);
 }
 
 .tracery-node1.missing {
-	background-color:rgba(255, 0, 0, .6);
+	background-color:rgba(100, 255, 0, .6);
 }
 .tracery-node2 {
-	background-color:rgba(255, 100, 55, 1);
+	background-color:rgba(35, 255, 155, 1);
+	font-size:4px;
+
 }
 .tracery-node.active {
 	box-shadow:inset 0px 0px 2px 3px rgba(55, 255, 255, 1),box-shadow :1px 1px 3px rgba(0, 0, 0, .5);
