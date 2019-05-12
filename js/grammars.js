@@ -35,18 +35,18 @@ function inSeasonVegetables(){
             "broccoli","cauliflower","chard","kale","leek",
             "onion"];
         case 3:
-            return ["artichoke","arugula","asparagus","avacado","beet",
+            return ["artichoke","arugula","asparagus","avocado","beet",
             "bok choy","carrot","cauliflower","chard",
             "kale","leek"];
         case 4:
-            return ["artichoke","arugula","asparagus","avacado","beet",
+            return ["artichoke","arugula","asparagus","avocado","beet",
             "cabbage","carrot","cauliflower","chard",
             "kale","leek"];
         case 5:
-            return ["avacado","basil","cabbage","carrot","corn","leek",
+            return ["avocado","basil","cabbage","carrot","corn","leek",
             "summer squash","tomato"];
         case 6:
-            return ["avacado","basil","corn","cucumber","eggplant","potato",
+            return ["avocado","basil","corn","cucumber","eggplant","potato",
             "summer squash","tomato"];
         case 7:
             return ["whatever's in season in August"];
