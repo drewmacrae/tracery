@@ -121,15 +121,21 @@ function inSeasonCookableVegetables(){
 //(kale salad, sauteed kales)
 
 //FIXME implementation of cookable and vegetable is clunky
-
+var fishList = ingredient(["salmon","fish","tuna","cod"]);
 //build lists with a mix of ingredients and non-ingredients
-var descriptiveProteinList = ingredient(["salmon", "fish", "bean", "lentil", 
-    "chickpea", "chicken", "mushroom", "beef"]);
+var descriptiveProteinList = ingredient(["bean", "lentil", "chickpea", "chicken", "mushroom", "beef"]);
 descriptiveProteinList.push("#descriptiveProtein# and #vegetable#");
+descriptiveProteinList.push("#fish#");
+descriptiveProteinList.push("smoked #fish#");
 
-var proteinList = ingredient([ "salmon", "fish", "beans", "tofu", "lentils",
-    "chickpeas", "chicken", "mushrooms", "beef"]);
+var proteinList = ingredient(["dried beans",
+"canned beans", "tofu", "lentils",
+    "chickpeas", "frozen chicken", "canned chicken", "foraged mushrooms", "frozen beef"]);
 proteinList.push("#protein# and #vegetable#");
+proteinList.push("#fish#");
+proteinList.push("smoked #fish#");
+proteinList.push("canned #fish#");
+proteinList.push("frozen #fish#");
 
 var pastaList = ingredient(["spaghetti","ziti","macaroni","tagliatelle",
     "rigatoni","linguine","penne","fettuccine","orzo"]);
@@ -195,6 +201,7 @@ var grammars = {
         "vegetable": ingredient(inSeasonVegetables()),
         "cookableVegetable": ingredient(inSeasonCookableVegetables()),
         "fruit":["apple","orange","honey","juice"],
+        "fish":fishList,
         "descriptiveProtein":descriptiveProteinList,
         "protein":proteinList,
         "pasta":pastaList,
