@@ -22,6 +22,11 @@ function ingredient(items){
 //FIXME only go through June
 //FIXME I don't like the implementation of this
 function inSeasonVegetables(){
+    //for social distancing:
+    return ["canned chickpeas", "dried chickpeas", "foraged mushrooms",
+    "onions", "that vegetable in the back of the fridge", "potato", "cabbage", 
+    "dried beans", "canned beans"]
+
     var Today = new Date();
     switch(Today.getMonth()){
         case 0:
@@ -64,6 +69,12 @@ function inSeasonVegetables(){
 //FIXME I only go through June
 //FIXME I don't like the implementation of this
 function inSeasonCookableVegetables(){
+
+	//for social distancing:
+    return ["canned chickpeas", "dried chickpeas", "foraged mushrooms",
+    "onions", "that vegetable in the back of the fridge", "potato", "cabbage", 
+    "dried beans", "canned beans"]
+
     var Today = new Date();
     switch(Today.getMonth()){
         case 0:
