@@ -30,12 +30,35 @@ define([], function() {'use strict';
     };
 
     var modifiers = {
+
+        commaListUniquify : function(s){
+            var arr = s.split(",");
+            var u = {}, a = "";
+            for(var i = 0, l = arr.length; i < l; ++i){
+                if(!u.hasOwnProperty(arr[i])) {
+                    a=a+","+arr[i];
+                    u[arr[i]] = 1;
+                }
+            }
+            return a;
+        },
+
+        commaListTobr : function(s) {
+            return s.replace(/,/g,"<br>");
+        },
+
+       brListToComma : function(s) {
+            return s.replace(/<br>/g,",");
+        },
+
         capitalizeAll : function(s) {
             return s.replace(/(?:^|\s)\S/g, function(a) {
                 return a.toUpperCase();
             });
 
         },
+
+
 
         capitalize : function(s) {
             return s.charAt(0).toUpperCase() + s.slice(1);

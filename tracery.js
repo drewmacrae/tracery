@@ -548,6 +548,31 @@ var tracery = {
     };
 
     var universalModifiers = {
+    	//commaListFix in a list substitute " and" for final comma
+    	//commaListUniquify
+    	commaListUniquify : function(s){
+    		var arr = s.split(",");
+		    var u = {}, a = "";
+		    for(var i = 0, l = arr.length; i < l; ++i){
+		        if(!u.hasOwnProperty(arr[i])) {
+		            a=a+","+arr[i];
+		            u[arr[i]] = 1;
+		        }
+		    }
+		    return a;
+		},
+
+    	//commaListTrim
+
+    	//commaListTobr
+    	commaListTobr : function(s) {
+    		return s.replace(/,/g,"<br>");
+    	},
+    	//brListTocomma
+    	brListToComma : function(s) {
+    		return s.replace(/<br>/g,",");
+    	},
+
         capitalizeAll : function(s) {
             return s.replace(/(?:^|\s)\S/g, function(a) {
                 return a.toUpperCase();

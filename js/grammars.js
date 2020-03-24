@@ -11,27 +11,80 @@ function listOf(listName,items){
     return ["#"+items+"#, #"+listName+"#","#"+items+"# and #"+items+"#"];
 }
 
+function ingredient(item){
+	return "[ingredients:#ingredients#"+item+"<br>]"+
+        		 item
+}
+
 //"[ingredients:#ingredients# artichoke]artichoke" for example. This appends an 
 //ingredient to an ingredient list
-function ingredient(items){
+function ingredients(items,prep=true){
     for (var i = items.length - 1; i >= 0; i--) {
-        items[i]="[ingredients:#ingredients#"+items[i]+"<br>]"+items[i]
+        if(prep){
+        	items[i]=ingredient(items[i])
+        } else {
+        	items[i]=noPrepIngredient(items[i])
+        }
     }
     //console.log(items);
     return items;
 }
 
+function noPrepIngredient(item){
+	return ingredient(item)+"[method:#method##addIn.capitalize# "+item+".]"
+}
+
+var addInList = ["mix in", "top with", "serve with", "add the"];
+var fineList = ["mince", "finely dice", "thinly slice"];//may be appended with d
+
 //FIXME only go through June
 //FIXME I don't like the implementation of this
 function inSeasonVegetables(){
     //for social distancing:
-    return ["canned chickpeas", "dried chickpeas", "foraged mushrooms",
-    "onions", "that vegetable in the back of the fridge", "potato", "cabbage", 
-    "dried beans", "canned beans"]
+    //FIXME allow dried chickpeas
+    return ["[ingredients:Canned chickpeas<br>#ingredients#]"+
+    "[method:Drain chickpeas. #method#. #addIn.capitalize# chickpeas. ]"+
+    "canned chickpeas", 
+
+    "[ingredients:Dried chickpeas<br>#ingredients#]"+
+    "[overnight:Soak chickpeas overnight. #overnight#]"+
+    "[method:Boil chickpeas for 25 minutes before "+
+    "draining and setting aside. #method# #addIn.capitalize# chickpeas. ]"+
+    "chickpeas", 
+    
+    "[ingredients:Mushrooms<br>#ingredients#]"+
+    "[method:Clean mushrooms with a damp cloth. Cut large mushrooms until all "+
+    "mushroom pieces are similar sizes, season and cook in a skillet until "+
+    "tender and fragrant. Set the mushrooms aside. #method# #addIn.capitalize# "+
+    "mushrooms. ]foraged mushrooms",
+    
+    "[ingredients:Onion<br>#ingredients#]"+
+    "[method:Remove top and root of the onion and peel. Mince a quarter of the "+
+    "onion and set aside #method##addIn.capitalize# the minced onion. ]onions", 
+    "that vegetable in the back of the fridge", 
+
+    "[ingredients:Potato<br>#ingredients#]"+
+    "[method:Peel potato, cut into one inch peices and boil for 20-30 minutes "+
+    "until easily pierced with a fork. #method##addIn.capitalize# potato]"+
+    "potato", 
+
+    "[ingredients:Cabbage<br>#ingredients#]"+
+    "[method:#method# Shred cabbage and season before serving.]"+
+    "cabbage", 
+    
+    "[ingredients:Chickpeas<br>#ingredients#]"+
+    "[method:Soak beans over night and cook in boiling water "+
+    "until beans soften (about an hour.) #method#]"+
+    "dried beans", 
+    
+    "[ingredients:Beans<br>#ingredients#]"+
+    "[method:Open and drain beans. #method#]"+
+    "canned beans"];
 
     var Today = new Date();
     switch(Today.getMonth()){
         case 0:
+        	//FIXME add specific prep for non-seasonal vegetables
             return ["beet","bok choy","broccoli","brussel sprouts",
             "cauliflower","chard","kale","leek","onion","radish","spinach"];
         case 1:
@@ -73,9 +126,18 @@ function inSeasonVegetables(){
 function inSeasonCookableVegetables(){
 
 	//for social distancing:
-    return ["canned chickpeas", "dried chickpeas", "foraged mushrooms",
-    "onions", "that vegetable in the back of the fridge", "potato", "cabbage", 
-    "dried beans", "canned beans"]
+    return ["[method:Drain chickpeas. #method#]canned chickpeas", 
+    "[overnight:Soak chickpeas overnight. #overnight#]dried chickpeas", 
+    "[method:Clean mushrooms with a damp cloth. #method#]foraged mushrooms",
+    "[method:Remove top and root of the onion and peel. #method#]onions", 
+    "that vegetable in the back of the fridge", 
+    "[method:Peel potato #method]potato", "cabbage",
+
+    "[overnight:Soak beans overnight. #overnight#]"+
+    "[method:Cook beans in boiling water until starting to soften "+
+    "(about an hour.) #method#]dried beans", 
+
+    "[method:Open and drain beans. #method#]canned beans"];
 
     var Today = new Date();
     switch(Today.getMonth()){
@@ -123,15 +185,16 @@ function inSeasonCookableVegetables(){
 //(kale salad, sauteed kales)
 
 //FIXME implementation of cookable and vegetable is clunky
-var fishList = ingredient(["salmon","fish","tuna","cod"]);
+//FIXME add prep for fish
+var fishList = ingredients(["salmon","fish","tuna","cod"]);
 //build lists with a mix of ingredients and non-ingredients
-var descriptiveProteinList = ingredient(["bean", "lentil", "chickpea", 
+var descriptiveProteinList = ingredients(["bean", "lentil", "chickpea", 
 	"chicken", "mushroom", "beef"]);
 descriptiveProteinList.push("#descriptiveProtein# and #vegetable#");
 descriptiveProteinList.push("#fish#");
 descriptiveProteinList.push("smoked #fish#");
 
-var proteinList = ingredient(["dried beans",
+var proteinList = ingredients(["dried beans",
 "canned beans", "tofu", "lentils",
     "chickpeas", "frozen chicken", "canned chicken", "foraged mushrooms", 
     "frozen beef"]);
@@ -140,29 +203,29 @@ proteinList.push("smoked #fish#");
 proteinList.push("canned #fish#");
 proteinList.push("#fish#");
 
-var pastaList = ingredient(["spaghetti","ziti","macaroni","tagliatelle",
+var pastaList = ingredients(["spaghetti","ziti","macaroni","tagliatelle",
     "rigatoni","linguine","penne","fettuccine","orzo"]);
 pastaList.push("[filling:#nonSauceExtra#][ingredients:#ingredients#flour and eggs (to make pasta) or #filling# tortellini<br>]#filling# tortellini");
 pastaList.push("[filling:#nonSauceExtraOrVegetableOrDescriptiveProtien#][ingredients:#ingredients#flour and eggs (to make pasta) or #filling# ravioli<br>] #filling# ravioli");
 pastaList.push("#optAdj ##pasta#");
 
-var nonSauceExtraList = ingredient([
+var nonSauceExtraList = ingredients([
             "cheese",
             "peanuts",
-            "walnuts",
-            "slivered almonds",
+            "toasted walnuts",
+            "toasted slivered almonds",
             "capers",
-            "bacon"]);
+            "cooked bacon"],true);
 nonSauceExtraList.push("[ingredients:#ingredients#soba noodles<br>lime<br>sesame oil<br>rice wine vinegar<br>sugar<br>]marinated soba noodles");
 var saucesList = ["[ingredients:#ingredients#sour cream<br>]#optSpice #sour cream"];
 saucesList.push("[ingredients:#ingredients#yogurt<br>]#optSpice #[ingredients:#ingredients#salt and pepper to taste<br>]yogurt sauce");
 saucesList.push("yogurt #vegetable# sauce[ingredients:#ingredients#yogurt<br>]");
-saucesList.push("[ingredients:#ingredients#minced onion<br>wine<br>#stock#<br>butter<br>]#optSpice #pan sauce[ingredients:#ingredients#salt and pepper to taste<br>]");
+saucesList.push("[ingredients:#ingredients##fine.capitalize#d onion<br>wine<br>#stock#<br>butter<br>]#optSpice #pan sauce[ingredients:#ingredients#salt and pepper to taste<br>]");
 saucesList.push("#optSpice ##vegetable# pesto[ingredients:#ingredients#oil<br>nuts<br>garlic<br>parmesan<br>]");
 
 if(outputFormat=="CBDQ"){
     var origin =["[recipes:]#setLets##message#"];
-    var dish = ["[ingredients:][method:]#dishDescription#"];
+    var dish = ["[ingredients:][overnight:][method:]#dishDescription#"];
     var side = ["[ingredients:]#sideDescription#"];
 } else {
     var origin = ["[recipes:]#setLets##message#<br>#recipes#"];
@@ -203,7 +266,7 @@ var dishDescription = [
             "#optAdj ##descriptiveProtein# casserole with #listOfVegetables#[ingredients:#ingredients#Butter<br>Flour<br>Bread crumbs<br>]",
         ];
 
-var stockList = ingredient(["vegetable stock", "vegetable broth", "chicken stock", "chicken broth", "mushroom broth", "white wine"]);
+var stockList = ingredients(["vegetable stock", "vegetable broth", "chicken stock", "chicken broth", "mushroom broth", "white wine"]);
 
 var adjList = ["#adj#, #adj#",
         	"[ingredients:#ingredients#Garlic<br>Butter<br>Parsely<br>]garlic",
@@ -219,10 +282,11 @@ var adjList = ["#adj#, #adj#",
         	"[ingredients:#ingredients##fruit.capitalize#<br>]sweet",
         	"[ingredients:#ingredients##stock.capitalize#<br>Butter or cream<br>]rich",
         	"[ingredients:#ingredients#Red pepper flakes<br>]spicy"];
-
+var CondimentList = ["Ketchup", "Mustard", "Mayo", "Relish", "Pickles", 
+	"Salt and pepper", "Brown mustard", "Yellow mustard"];
 var proteinPrepList = [
         	"[ingredients:#ingredients#Pie crust<br>Butter<br>Flour<br>Diced potatoes<br>Peas<br>Diced carrots<br>]pot-pie",
-        	"[ingredients:#ingredients#Chopped onion<br>Pepper<br>Bread crumbs<br>Bun<br>Ketchup<br>]burger"];
+        	"[ingredients:#ingredients#Chopped onion<br>Pepper<br>Bread crumbs<br>Bun<br>#Condiment#<br>]burger"];
 
         //specific dishes don't allow for much modification
 var specificDishList = [
@@ -280,10 +344,15 @@ var sideDescriptionList = [
             "[ingredients:#ingredients#Oil<br>]"+
             "[thisVegetable:cookableVegetable]"+
             "[ingredients:#ingredients#Salt and pepper<br>]"+
-            "[Coarsely chop #thisVegetable, before cooking it in an oiled skillet and seasoning to taste as it cools.]"+
+            "[Coarsely chop #thisVegetable, before cooking it in an oiled "+
+            "skillet and seasoning to taste as it cools.]"+
             "sauteed #thisVegetable#",
             
-            "#vegetable#",
+            "[thisVegetable:#vegetable#]"+
+            "[Wash, dry and thinly chop #thisVegetable#, seasoning as you "+
+            "arrange it on a plate"+
+            "#thisVegetable#",
+            
             "#spice# spiced #vegetable#",
             "#sideDescription# and #extra#"
         ];
@@ -292,15 +361,18 @@ var grammars = {
 	recipes : {
 		"origin":"<h1>#dish.capitalize#</h1>"+
 		"<h3>Ingredients</h3>"+
-		"#ingredients#<br>"+
-		"#method#",
+		"#ingredients.brListToComma.commaListUniquify.commaListTobr#<br>"+
+		"#overnight##method#",
 		"dish":dish,
+		"addIn":addInList,
+
+		"fine":fineList,
 		"dishDescription":dishDescription,
 		        "listOfVegetables": listOf("listOfVegetables","vegetable"),
         "listOfCookableVegetables": listOf("listOfCookableVegetables","cookableVegetable"),
 
-        "vegetable": ingredient(inSeasonVegetables()),
-        "cookableVegetable": ingredient(inSeasonCookableVegetables()),
+        "vegetable": inSeasonVegetables(),
+        "cookableVegetable": ingredients(inSeasonCookableVegetables()),
         "fruit":["apple","orange","honey","juice"],
         "fish":fishList,
         "descriptiveProtein":descriptiveProteinList,
@@ -309,8 +381,8 @@ var grammars = {
         "adj": adjList,
         "stock": stockList,
         "optAdj ":["","#adj# "],
-        "spice":ingredient(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
-        	"mint","thyme","oregano","garam masala","rosemary","sage"]),
+        "spice":ingredients(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
+        	"mint","thyme","oregano","garam masala","rosemary","sage"],true),
         "optSpice ":["a hint of #spice# on ","#spice# ",""],
         "proteinPreparation":proteinPrepList,
 		"specificDish":specificDishList,
@@ -326,12 +398,14 @@ var grammars = {
             " with #extra#"
         ],
         "nonSauceExtraOrVegetableOrDescriptiveProtien":["#nonSauceExtra#","#vegetable#","#descriptiveProtein#"],
-
+        "Condiment": CondimentList
 	},
     dinners : {
         "origin":origin,
         "dish":dish,
         "side":side,
+        "addIn":addInList,
+        "fine":fineList,
         "message":[
             "#lets.capitalize# make #dish##!#",
             "Today #lets# make #dish##!#",
@@ -344,8 +418,8 @@ var grammars = {
         "listOfVegetables": listOf("listOfVegetables","vegetable"),
         "listOfCookableVegetables": listOf("listOfCookableVegetables","cookableVegetable"),
 
-        "vegetable": ingredient(inSeasonVegetables()),
-        "cookableVegetable": ingredient(inSeasonCookableVegetables()),
+        "vegetable": ingredients(inSeasonVegetables()),
+        "cookableVegetable": ingredients(inSeasonCookableVegetables()),
         "fruit":["apple","orange","honey","juice"],
         "fish":fishList,
         "descriptiveProtein":descriptiveProteinList,
@@ -354,7 +428,7 @@ var grammars = {
         "adj": adjList,
         "stock": stockList,
         "optAdj ":["","#adj# "],
-        "spice":ingredient(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
+        "spice":ingredients(["turmeric","cinnamon","paprika","cumin","cilantro","parsely",
         "mint","thyme","oregano","garam masala","rosemary","sage"]),
         "optSpice ":["a hint of #spice# on ","#spice# ",""],
         "proteinPreparation":proteinPrepList,

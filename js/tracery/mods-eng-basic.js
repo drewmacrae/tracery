@@ -29,6 +29,26 @@ var baseEngModifiers = {
         return s2;
     },
 
+    commaListUniquify : function(s){
+        var arr = s.split(",");
+        var u = {}, a = "";
+        for(var i = 0, l = arr.length; i < l; ++i){
+            if(!u.hasOwnProperty(arr[i])) {
+                a=a+","+arr[i];
+                u[arr[i]] = 1;
+            }
+        }
+        return a;
+    },
+
+    commaListTobr : function(s) {
+        return s.replace(/,/g,"<br>");
+    },
+
+    brListToComma : function(s) {
+            return s.replace(/<br>/g,",");
+    },
+
     capitalizeAll : function(s) {
         var s2 = "";
         var capNext = true;
