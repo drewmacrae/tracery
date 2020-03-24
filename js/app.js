@@ -182,7 +182,7 @@ function setMode(mode) {
     }
     setSeed(Math.floor(Math.random() * 9999999), true);
 
-   $("#grammar-select").val("dinners");
+   $("#grammar-select").val("recipes");
     loadGrammar(grammars[$("#grammar-select").val()]);
     generate();
     setVisualization("expansion");

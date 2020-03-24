@@ -12,8 +12,8 @@ function listOf(listName,items){
 }
 
 function ingredient(item){
-	return "[ingredients:#ingredients#"+item+"<br>]"+
-        		 item
+	return "[thisItem:"+item+"]"+
+	"[ingredients:#ingredients##thisItem.capitalize#<br>]#thisItem#"
 }
 
 //"[ingredients:#ingredients# artichoke]artichoke" for example. This appends an 
@@ -73,9 +73,10 @@ function inSeasonVegetables(){
     "cabbage", 
     
     "[ingredients:Chickpeas<br>#ingredients#]"+
-    "[method:Soak beans over night and cook in boiling water "+
+    "[overnight:Soak beans over night. #overnight#]"+
+    "[method:Cook beans in boiling water "+
     "until beans soften (about an hour.) #method#]"+
-    "dried beans", 
+    "beans", 
     
     "[ingredients:Beans<br>#ingredients#]"+
     "[method:Open and drain beans. #method#]"+
@@ -205,7 +206,9 @@ proteinList.push("#fish#");
 
 var pastaList = ingredients(["spaghetti","ziti","macaroni","tagliatelle",
     "rigatoni","linguine","penne","fettuccine","orzo"]);
-pastaList.push("[filling:#nonSauceExtra#][ingredients:#ingredients#flour and eggs (to make pasta) or #filling# tortellini<br>]#filling# tortellini");
+pastaList.push("[filling:#nonSauceExtra#]"+
+	"[ingredients:#ingredients#flour and eggs (to make pasta) or #filling# tortellini<br>]"+
+	"#filling# tortellini");
 pastaList.push("[filling:#nonSauceExtraOrVegetableOrDescriptiveProtien#][ingredients:#ingredients#flour and eggs (to make pasta) or #filling# ravioli<br>] #filling# ravioli");
 pastaList.push("#optAdj ##pasta#");
 
